@@ -1,0 +1,28 @@
+version: "3.8"
+
+services:
+  demo:
+    image: __APP_IMAGE__
+    ports:
+      - target: 8080
+        published: 80
+        protocol: tcp
+        mode: ingress
+      - target: 8081
+        published: 8081
+        protocol: tcp
+        mode: ingress
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8080/health')"]
+      interval: 20s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      resources:
+        limits:
+          cpus: "0.25"
+          memory: 128M
